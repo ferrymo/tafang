@@ -360,6 +360,14 @@ export class Game {
     }
     
     updateEnemies() {
+        // 安全检查
+        if (!this.enemies) {
+            console.error('enemies数组未初始化！当前值:', this.enemies);
+            console.error('当前Game对象状态:', this);
+            this.enemies = [];
+            return;
+        }
+        
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             const enemy = this.enemies[i];
             enemy.update();
