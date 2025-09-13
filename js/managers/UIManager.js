@@ -5,7 +5,7 @@ import { settingsManager } from '../settings.js';
 export class UIManager {
     constructor() {
         this.initializeElements();
-        this.setupEventListeners();
+        this.initializeTheme();
     }
     
     /**
@@ -36,10 +36,61 @@ export class UIManager {
     }
     
     /**
-     * 设置事件监听器
+     * 初始化UI主题
      */
-    setupEventListeners() {
-        // 这个方法会在Game类中调用，传入回调函数
+    initializeTheme() {
+        // 监听主题变化
+        themeManager.addThemeChangeListener((theme, themeName) => {
+            this.updateThemeDisplay(themeName, theme);
+        });
+        
+        // 初始化当前主题显示
+        const currentTheme = themeManager.getCurrentTheme();
+        const currentThemeName = themeManager.getCurrentThemeName();
+        this.updateThemeDisplay(currentThemeName, currentTheme);
+    }
+    
+    /**
+     * 更新主题显示
+     */
+    updateThemeDisplay(themeName, theme) {
+        // 更新防御塔商店显示
+        this.updateTowerShopTheme(theme);
+    }
+    
+    /**
+     * 更新防御塔商店主题
+     */
+    updateTowerShopTheme(theme) {
+        const towerTypes = ['basic', 'rapid', 'heavy'];
+        
+        towerTypes.forEach(towerType => {
+            const button = document.querySelector(`[data-tower="${towerType}"]`);
+            if (button && theme.towers && theme.towers[towerType]) {
+                const towerConfig = theme.towers[towerType];
+                
+                // 更新名称
+                const nameElement = button.querySelector('.tower-info div:first-child');
+                if (nameElement && towerConfig.name) {
+                    nameElement.textContent = towerConfig.name;
+                }
+                
+                // 更新图标
+                const iconElement = button.querySelector('.tower-icon');
+                if (iconElement && towerConfig.symbol) {
+                    iconElement.textContent = towerConfig.symbol;
+                    iconElement.style.fontSize = '24px';
+                    iconElement.style.display = 'flex';
+                    iconElement.style.alignItems = 'center';
+                    iconElement.style.justifyContent = 'center';
+                }
+                
+                // 更新工具提示
+                if (towerConfig.description) {
+                    button.title = towerConfig.description;
+                }
+            }
+        });
     }
     
     /**

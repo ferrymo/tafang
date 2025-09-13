@@ -440,6 +440,13 @@ export class ThemeManager {
     }
     
     /**
+     * 获取当前主题名称
+     */
+    getCurrentThemeName() {
+        return this.currentTheme;
+    }
+    
+    /**
      * 获取主题化的颜色
      */
     getThemedColor(category, type) {

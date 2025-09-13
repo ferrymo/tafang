@@ -2,6 +2,10 @@ import { GAME_CONFIG } from '../config.js';
 import { GameUtils } from '../utils.js';
 import { Bullet } from './Bullet.js';
 import { themeManager } from '../themes.js';
+import { EntityRenderer } from '../renderers/EntityRenderer.js';
+
+// 全局实体渲染器实例
+const entityRenderer = new EntityRenderer();
 
 // 防御塔类
 export class Tower {
@@ -94,73 +98,13 @@ export class Tower {
     }
     
     draw(ctx, isSelected = false) {
-        // 获取主题化的防御塔配置
-        const themeConfig = themeManager.getThemedEntityConfig('towers', this.type);
-        const displayColor = themeConfig ? themeConfig.color : this.color;
-        const displaySymbol = themeConfig ? themeConfig.symbol : null;
+        // 更新动画时间
+        entityRenderer.update();
         
-        if (isSelected) {
-            ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size + 5, 0, Math.PI * 2);
-            ctx.fill();
-        }
+        // 获取当前主题
+        const currentTheme = themeManager.getCurrentThemeName();
         
-        // 开火时的闪烁效果
-        if (this.isShooting) {
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size + 3, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        
-        // 绘制防御塔主体
-        ctx.fillStyle = displayColor;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // 绘制边框
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        // 如果有主题符号，绘制符号
-        if (displaySymbol && displaySymbol.length <= 2) {
-            ctx.fillStyle = '#FFF';
-            ctx.font = `${this.size}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            // 添加文字描边以提高可见性
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 1;
-            ctx.strokeText(displaySymbol, this.x, this.y - 2);
-            ctx.fillText(displaySymbol, this.x, this.y - 2);
-        }
-        
-        // 绘制等级
-        if (this.level > 1) {
-            ctx.fillStyle = '#FFF';
-            ctx.font = 'bold 10px Arial';
-            ctx.textAlign = 'center';
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            const levelY = displaySymbol ? this.y + this.size - 5 : this.y + 4;
-            ctx.strokeText(this.level.toString(), this.x, levelY);
-            ctx.fillText(this.level.toString(), this.x, levelY);
-        }
-        
-        // 绘制炮管指向目标
-        if (this.target && !this.target.isDead()) {
-            const angle = GameUtils.getAngle(this, this.target);
-            
-            ctx.strokeStyle = '#333';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(this.x, this.y);
-            ctx.lineTo(this.x + Math.cos(angle) * (this.size - 2), this.y + Math.sin(angle) * (this.size - 2));
-            ctx.stroke();
-        }
+        // 使用新的实体渲染器绘制精致的炮塔
+        entityRenderer.drawTower(ctx, this, currentTheme, isSelected);
     }
 }

@@ -219,7 +219,7 @@ body {
     bottom: 0;
     background: linear-gradient(45deg, transparent 40%, rgba(0, 255, 255, 0.1) 50%, transparent 60%);
     border-radius: inherit;
-    animation: scan 2s linear infinite;
+    animation: scan 4s linear infinite; /* 从2s改为4s */
 }
 
 .mech-rapid-tower {
@@ -448,11 +448,11 @@ body {
 }
 
 .tower-icon.pulsing {
-    animation: pulse 1.5s ease-in-out infinite;
+    animation: pulse 3s ease-in-out infinite; /* 从1.5s改为3s */
 }
 
 .tower-icon.glowing {
-    animation: glow 2s ease-in-out infinite;
+    animation: glow 4s ease-in-out infinite; /* 从2s改为4s */
 }
 
 /* 控制面板样式 */

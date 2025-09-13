@@ -12,6 +12,7 @@ export class GameRenderer {
         this.themeEffects = new ThemeEffects(canvas, ctx);
         this.mapRenderer = new ThemeMapRenderer(canvas, ctx);
         this.currentTheme = 'classic';
+        this.animationTime = 0; // 添加统一的动画时间
         
         // 初始化主题
         this.updateTheme();
@@ -228,11 +229,11 @@ export class GameRenderer {
     addTowerSelectionEffect(tower) {
         // 绘制发光效果
         this.ctx.save();
-        this.ctx.globalAlpha = 0.3 + 0.2 * Math.sin(Date.now() * 0.005);
+        this.ctx.globalAlpha = 0.3 + 0.2 * Math.sin(this.animationTime * 1.0); // 使用统一的动画时间，减慢速度
         this.ctx.strokeStyle = '#00ff00';
         this.ctx.lineWidth = 3;
         this.ctx.beginPath();
-        this.ctx.arc(tower.x, tower.y, 25 + 5 * Math.sin(Date.now() * 0.008), 0, Math.PI * 2);
+        this.ctx.arc(tower.x, tower.y, 25 + 5 * Math.sin(this.animationTime * 1.2), 0, Math.PI * 2); // 减慢脉动速度
         this.ctx.stroke();
         this.ctx.restore();
     }
@@ -282,6 +283,9 @@ export class GameRenderer {
      * 更新渲染器
      */
     update() {
+        // 更新动画时间
+        this.animationTime += 0.02; // 与EntityRenderer保持一致的速度
+        
         // 暂时禁用所有动态更新以避免闪烁
         /*
         // 更新主题特效
