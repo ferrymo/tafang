@@ -64,125 +64,272 @@ export const GAME_THEMES = {
     
     orc: {
         name: '兽人入侵',
-        description: '对抗野蛮的兽人部落',
-        background: '#8FBC8F',
-        pathColor: '#654321',
-        pathBorderColor: '#4A4A4A',
+        description: '中世纪奇幻世界，对抗野蛮的兽人部落',
+        background: '#2d5016', // 深绿色森林背景
+        pathColor: '#4a3728', // 泥土路径
+        pathBorderColor: '#1a1a1a',
+        skyColor: '#87ceeb', // 天空颜色
+        
+        // 环境装饰元素
+        decorations: {
+            trees: ['🌲', '🌳', '🌴'], // 树木
+            stones: ['🪨', '⛰️'], // 石头和山
+            misc: ['🏰', '⚔️', '🛡️'] // 城堡、剑、盾
+        },
         
         enemies: {
             basic: {
-                name: '兽人战士',
+                name: '兽人步兵',
                 color: '#8B4513',
                 symbol: '👹',
-                description: '凶猛的兽人战士'
+                description: '使用粗糙武器的普通兽人战士',
+                healthMultiplier: 1.0,
+                speedMultiplier: 1.0,
+                trail: { color: '#654321', particles: true }
             },
             fast: {
                 name: '兽人狼骑',
                 color: '#DAA520',
                 symbol: '🐺',
-                description: '骑着恶狼的突击兵'
+                description: '骑着巨狼的快速突击兵',
+                healthMultiplier: 0.8,
+                speedMultiplier: 1.5,
+                trail: { color: '#8B4513', particles: true, howl: true }
             },
             tank: {
                 name: '兽人酋长',
                 color: '#DC143C',
                 symbol: '👺',
-                description: '强大的兽人酋长'
+                description: '映着猪骨铠甲的强大酋长',
+                healthMultiplier: 2.0,
+                speedMultiplier: 0.7,
+                trail: { color: '#8B0000', particles: true, intimidation: true }
+            },
+            elite: {
+                name: '兽人萨满',
+                color: '#4B0082',
+                symbol: '🧿',
+                description: '掌握黑暗魔法的邪恶萨满',
+                healthMultiplier: 1.5,
+                speedMultiplier: 1.2,
+                trail: { color: '#301934', particles: true, magic: true, teleport: true }
+            },
+            boss: {
+                name: '兽人酵王',
+                color: '#8B0000',
+                symbol: '🐉',
+                description: '古老而强大的兽人首领，召唤者和统治者',
+                healthMultiplier: 5.0,
+                speedMultiplier: 0.8,
+                trail: { color: '#8B0000', particles: true, aura: true, summon: true }
             }
         },
         
         towers: {
             basic: {
-                name: '弓箭塔',
-                color: '#8B4513',
+                name: '精灵弓箭手',
+                color: '#228B22',
                 symbol: '🏹',
-                description: '精灵弓箭手塔'
+                description: '精准的精灵弓箭手，擅长远程射击',
+                projectile: '➢', // 箭头
+                attackEffect: 'arrow',
+                upgradeEffect: 'nature'
             },
             rapid: {
-                name: '魔法塔',
+                name: '魔法奥术塔',
                 color: '#4169E1',
                 symbol: '🔮',
-                description: '施法者之塔'
+                description: '施放奥术魔法的高频攻击塔',
+                projectile: '✨', // 闪烁
+                attackEffect: 'magic',
+                upgradeEffect: 'arcane'
             },
             heavy: {
-                name: '投石机',
-                color: '#708090',
+                name: '矮人火炮',
+                color: '#B8860B',
+                symbol: '💥',
+                description: '矮人工匠制作的重型攻城火炮',
+                projectile: '💣', // 炸弹
+                attackEffect: 'explosion',
+                upgradeEffect: 'forge'
+            },
+            special: {
+                name: '圣骑士塔',
+                color: '#FFD700',
                 symbol: '⚔️',
-                description: '重型攻城器械'
+                description: '圣洁的圣骑士，可以治疗和净化',
+                projectile: '✨',
+                attackEffect: 'holy',
+                upgradeEffect: 'divine'
             }
         },
         
         bullets: {
-            basic: { color: '#8B4513', trail: false },
-            rapid: { color: '#4169E1', trail: true },
-            heavy: { color: '#696969', trail: false }
+            basic: { color: '#8B4513', trail: true, effect: 'arrow' },
+            rapid: { color: '#4169E1', trail: true, effect: 'magic' },
+            heavy: { color: '#FF4500', trail: false, effect: 'explosion' },
+            special: { color: '#FFD700', trail: true, effect: 'holy' }
         },
         
         effects: {
             explosion: '#FF4500',
             hit: '#FFD700',
-            upgrade: '#32CD32'
+            upgrade: '#32CD32',
+            magic: '#8A2BE2',
+            arrow: '#8B4513',
+            holy: '#FFD700',
+            nature: '#228B22',
+            arcane: '#4B0082',
+            forge: '#B8860B',
+            divine: '#FFFFE0'
+        },
+        
+        // 环境音效
+        sounds: {
+            ambient: 'forest',
+            enemyHit: 'grunt',
+            towerAttack: 'bowstring',
+            explosion: 'boom'
         }
     },
     
     mech: {
         name: '机械战争',
-        description: '未来科技对抗机器人军团',
-        background: '#2F4F4F',
-        pathColor: '#708090',
-        pathBorderColor: '#4A4A4A',
+        description: '未来赛博朋克世界，对抗AI机器人军团',
+        background: '#0f0f23', // 深空背景
+        pathColor: '#2a2a3e', // 金属路径
+        pathBorderColor: '#00ffff', // 青色边框
+        skyColor: '#191932', // 夜空
+        
+        // 环境装饰元素
+        decorations: {
+            structures: ['🏢', '🏭', '⚙️'], // 建筑物
+            tech: ['📰', '🔋', '⚡'], // 科技设备
+            energy: ['🔆', '🔭', '✨'] // 能量效果
+        },
         
         enemies: {
             basic: {
-                name: '侦察机器人',
+                name: '侦察无人机',
                 color: '#C0C0C0',
                 symbol: '🤖',
-                description: '基础战斗单位'
+                description: '轻型侦察机器人，速度快但装甲薄弱',
+                healthMultiplier: 0.8,
+                speedMultiplier: 1.2,
+                trail: { color: '#00ffff', particles: true, electric: true }
             },
             fast: {
-                name: '突击无人机',
+                name: '突击攻击机',
                 color: '#00CED1',
                 symbol: '🚁',
-                description: '高速飞行单位'
+                description: '高速飞行攻击机，可以迅速机动',
+                healthMultiplier: 0.6,
+                speedMultiplier: 2.0,
+                trail: { color: '#00bfff', particles: true, boost: true }
             },
             tank: {
-                name: '重型机甲',
+                name: '重型战斗机甲',
                 color: '#4682B4',
                 symbol: '🦾',
-                description: '装甲机械巨兽'
+                description: '装甲厚重的战斗机甲，移动缓慢但生命值极高',
+                healthMultiplier: 3.0,
+                speedMultiplier: 0.5,
+                trail: { color: '#4682b4', particles: true, heavy: true }
+            },
+            elite: {
+                name: '隐形暗杀者',
+                color: '#9370DB',
+                symbol: '🕵️',
+                description: '具有隐身能力的高级暗杀机器人',
+                healthMultiplier: 1.5,
+                speedMultiplier: 1.5,
+                trail: { color: '#9370db', particles: true, stealth: true, cloak: true }
+            },
+            boss: {
+                name: 'AI母舰',
+                color: '#ff0080',
+                symbol: '🛸',
+                description: '巨型战斗母舰，搭载着先进的AI系统',
+                healthMultiplier: 8.0,
+                speedMultiplier: 0.6,
+                trail: { color: '#ff0080', particles: true, shield: true, repair: true }
             }
         },
         
         towers: {
             basic: {
-                name: '激光炮',
+                name: '脉冲激光炮',
                 color: '#FF6347',
                 symbol: '⚡',
-                description: '能量武器系统'
+                description: '基础能量武器，发射高能激光',
+                projectile: '⚡', // 闪电
+                attackEffect: 'laser',
+                upgradeEffect: 'energy'
             },
             rapid: {
-                name: '等离子炮',
+                name: '等离子加速器',
                 color: '#00FFFF',
                 symbol: '💫',
-                description: '高频能量武器'
+                description: '高频率等离子武器系统',
+                projectile: '✨', // 等离子
+                attackEffect: 'plasma',
+                upgradeEffect: 'quantum'
             },
             heavy: {
-                name: '轨道炮',
+                name: '轨道破坏炮',
                 color: '#9370DB',
                 symbol: '🔥',
-                description: '超重型轨道武器'
+                description: '超重型轨道动能武器',
+                projectile: '💥', // 爆炸
+                attackEffect: 'railgun',
+                upgradeEffect: 'antimatter'
+            },
+            special: {
+                name: 'EMP干扰塔',
+                color: '#ffff00',
+                symbol: '🔋',
+                description: '电磁脉冲干扰器，可以缓解敌人',
+                projectile: '⚡',
+                attackEffect: 'emp',
+                upgradeEffect: 'overload'
             }
         },
         
         bullets: {
-            basic: { color: '#FF6347', trail: true },
-            rapid: { color: '#00FFFF', trail: true },
-            heavy: { color: '#9370DB', trail: true }
+            basic: { color: '#FF6347', trail: true, effect: 'laser', glow: true },
+            rapid: { color: '#00FFFF', trail: true, effect: 'plasma', glow: true },
+            heavy: { color: '#9370DB', trail: true, effect: 'railgun', glow: true },
+            special: { color: '#ffff00', trail: true, effect: 'emp', glow: true }
         },
         
         effects: {
             explosion: '#00BFFF',
             hit: '#FFFF00',
-            upgrade: '#00FF7F'
+            upgrade: '#00FF7F',
+            laser: '#FF6347',
+            plasma: '#00FFFF',
+            railgun: '#9370DB',
+            emp: '#ffff00',
+            energy: '#ff4500',
+            quantum: '#00ced1',
+            antimatter: '#8a2be2',
+            overload: '#ffd700'
+        },
+        
+        // 环境音效
+        sounds: {
+            ambient: 'cyberpunk',
+            enemyHit: 'electric',
+            towerAttack: 'laser',
+            explosion: 'digital'
+        },
+        
+        // 特殊效果
+        specialEffects: {
+            glitch: true, // 故障效果
+            scanlines: true, // 扫描线
+            energyField: true, // 能量场
+            hologram: true // 全息效果
         }
     }
 };

@@ -524,8 +524,7 @@ export class Game {
         }
         
         this.renderer.clear();
-        this.renderer.drawBackground();
-        this.renderer.drawPath(GAME_CONFIG.GAME_PATH);
+        this.renderer.drawBackground(GAME_CONFIG.GAME_PATH);
         
         this.renderer.drawEntities(this.enemies, this.towers, this.bullets, this.selectedTower);
         this.renderer.drawEffects(this.particles, this.visualEffects);
