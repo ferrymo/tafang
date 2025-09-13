@@ -1,6 +1,5 @@
 import { GAME_CONFIG } from '../config.js';
-
-// 游戏渲染器
+import { themeManager } from '../themes.js';
 export class GameRenderer {
     constructor(canvas, ctx) {
         this.canvas = canvas;
@@ -20,8 +19,11 @@ export class GameRenderer {
      * 绘制背景
      */
     drawBackground() {
+        // 获取主题化的背景颜色
+        const backgroundColor = themeManager.getThemedColor('background');
+        
         // 绘制草地背景
-        this.ctx.fillStyle = '#90EE90';
+        this.ctx.fillStyle = backgroundColor;
         this.ctx.fillRect(0, 0, this.width, this.height);
         
         // 绘制网格
@@ -47,8 +49,12 @@ export class GameRenderer {
      * 绘制游戏路径
      */
     drawPath(path) {
+        // 获取主题化的路径颜色
+        const pathColor = themeManager.getThemedColor('path');
+        const pathBorderColor = themeManager.getThemedColor('pathBorder');
+        
         // 绘制路径边缘
-        this.ctx.strokeStyle = '#654321';
+        this.ctx.strokeStyle = pathBorderColor;
         this.ctx.lineWidth = 35;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
@@ -65,7 +71,7 @@ export class GameRenderer {
         
         // 绘制路径主体
         this.ctx.globalCompositeOperation = 'source-over';
-        this.ctx.strokeStyle = '#8B4513';
+        this.ctx.strokeStyle = pathColor;
         this.ctx.lineWidth = 30;
         
         this.ctx.beginPath();

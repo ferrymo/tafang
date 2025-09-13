@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from '../config.js';
 import { GameUtils } from '../utils.js';
+import { themeManager } from '../themes.js';
 
 // 敌人类
 export class Enemy {
@@ -80,8 +81,13 @@ export class Enemy {
     draw(ctx) {
         if (this.isDying) return;
         
+        // 获取主题化的敌人配置
+        const themeConfig = themeManager.getThemedEntityConfig('enemies', this.type);
+        const displayColor = themeConfig ? themeConfig.color : this.color;
+        const displaySymbol = themeConfig ? themeConfig.symbol : null;
+        
         // 绘制敌人主体
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = displayColor;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -90,6 +96,20 @@ export class Enemy {
         ctx.strokeStyle = '#333';
         ctx.lineWidth = 2;
         ctx.stroke();
+        
+        // 如果有主题符号，绘制符号
+        if (displaySymbol && displaySymbol.length <= 2) {
+            ctx.fillStyle = '#FFF';
+            ctx.font = `${this.size}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // 添加文字描边以提高可见性
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.strokeText(displaySymbol, this.x, this.y);
+            ctx.fillText(displaySymbol, this.x, this.y);
+        }
         
         // 绘制生命值条
         this.drawHealthBar(ctx);

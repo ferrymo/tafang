@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from '../config.js';
 import { GameUtils } from '../utils.js';
+import { themeManager } from '../themes.js';
 
 // 子弹类
 export class Bullet {
@@ -10,6 +11,9 @@ export class Bullet {
         this.damage = damage;
         this.type = type;
         this.hasHit = false;
+        
+        // 计算飞行角度用于轨迹效果
+        this.angle = GameUtils.getAngle(this, target);
         
         this.setTypeProperties(type);
     }
@@ -47,7 +51,29 @@ export class Bullet {
     }
     
     draw(ctx) {
-        ctx.fillStyle = this.color;
+        // 获取主题化的子弹配置
+        const themeConfig = themeManager.getThemedEntityConfig('bullets', this.type);
+        const displayColor = themeConfig ? themeConfig.color : this.color;
+        const hasTrail = themeConfig ? themeConfig.trail : false;
+        
+        // 绘制轨迹效果
+        if (hasTrail) {
+            ctx.strokeStyle = displayColor;
+            ctx.lineWidth = this.size;
+            ctx.lineCap = 'round';
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            const trailLength = 10;
+            const dx = Math.cos(this.angle) * trailLength;
+            const dy = Math.sin(this.angle) * trailLength;
+            ctx.moveTo(this.x - dx, this.y - dy);
+            ctx.lineTo(this.x, this.y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+        }
+        
+        // 绘制子弹主体
+        ctx.fillStyle = displayColor;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();

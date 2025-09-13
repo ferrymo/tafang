@@ -1,4 +1,6 @@
 // UI管理器
+import { themeManager } from '../themes.js';
+
 export class UIManager {
     constructor() {
         this.initializeElements();
@@ -55,7 +57,22 @@ export class UIManager {
     updateTowerButtons(currentMoney) {
         this.elements.towerButtons.forEach(btn => {
             const cost = parseInt(btn.dataset.cost);
+            const towerType = btn.dataset.tower;
+            
+            // 禁用/启用按钮
             btn.disabled = currentMoney < cost;
+            
+            // 更新主题化的显示名称
+            const themeConfig = themeManager.getThemedEntityConfig('towers', towerType);
+            if (themeConfig) {
+                const towerInfo = btn.querySelector('.tower-info div:first-child');
+                if (towerInfo) {
+                    towerInfo.textContent = themeConfig.name;
+                }
+                
+                // 更新工具提示
+                btn.title = themeConfig.description;
+            }
         });
     }
     

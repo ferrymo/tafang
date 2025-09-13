@@ -7,6 +7,7 @@ import { Particle } from './effects/Particle.js';
 import { VisualEffect } from './effects/VisualEffect.js';
 import { GameRenderer } from './managers/GameRenderer.js';
 import { UIManager } from './managers/UIManager.js';
+import { themeManager } from './themes.js';
 
 // 主游戏类
 export class Game {
@@ -19,6 +20,16 @@ export class Game {
         // 初始化管理器
         this.renderer = new GameRenderer(this.canvas, this.ctx);
         this.uiManager = new UIManager();
+        
+        // 加载并设置主题
+        themeManager.loadTheme();
+        console.log('当前主题:', themeManager.getCurrentThemeName(), themeManager.getCurrentTheme());
+        
+        themeManager.addThemeChangeListener(() => {
+            // 主题变更时重新渲染
+            console.log('主题已切换为:', themeManager.getCurrentThemeName());
+            this.render();
+        });
         
         // 游戏状态
         this.isRunning = false;
@@ -103,6 +114,31 @@ export class Game {
         document.addEventListener('keydown', (e) => {
             this.handleKeyPress(e);
         });
+        
+        // 主题选择器
+        const themeSelect = document.getElementById('themeSelect');
+        const themeDescription = document.getElementById('themeDescription');
+        
+        if (themeSelect) {
+            themeSelect.value = themeManager.getCurrentThemeName();
+            
+            // 初始化主题描述
+            if (themeDescription) {
+                themeDescription.textContent = themeManager.getCurrentTheme().description;
+            }
+            
+            themeSelect.addEventListener('change', (e) => {
+                themeManager.setTheme(e.target.value);
+                const currentTheme = themeManager.getCurrentTheme();
+                
+                // 更新描述
+                if (themeDescription) {
+                    themeDescription.textContent = currentTheme.description;
+                }
+                
+                this.uiManager.showToast(`主题已切换为: ${currentTheme.name}`, 'success');
+            });
+        }
     }
     
     handleKeyPress(e) {
