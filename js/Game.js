@@ -121,31 +121,6 @@ export class Game {
         document.addEventListener('keydown', (e) => {
             this.handleKeyPress(e);
         });
-        
-        // 主题选择器
-        const themeSelect = document.getElementById('themeSelect');
-        const themeDescription = document.getElementById('themeDescription');
-        
-        if (themeSelect) {
-            themeSelect.value = themeManager.getCurrentThemeName();
-            
-            // 初始化主题描述
-            if (themeDescription) {
-                themeDescription.textContent = themeManager.getCurrentTheme().description;
-            }
-            
-            themeSelect.addEventListener('change', (e) => {
-                themeManager.setTheme(e.target.value);
-                const currentTheme = themeManager.getCurrentTheme();
-                
-                // 更新描述
-                if (themeDescription) {
-                    themeDescription.textContent = currentTheme.description;
-                }
-                
-                this.uiManager.showToast(`主题已切换为: ${currentTheme.name}`, 'success');
-            });
-        }
     }
     
     handleKeyPress(e) {
