@@ -8,6 +8,7 @@ import { VisualEffect } from './effects/VisualEffect.js';
 import { GameRenderer } from './managers/GameRenderer.js';
 import { UIManager } from './managers/UIManager.js';
 import { themeManager } from './themes.js';
+import { settingsManager } from './settings.js';
 
 // 主游戏类
 export class Game {
@@ -110,6 +111,12 @@ export class Game {
         this.uiManager.elements.sellTower.addEventListener('click', () => this.sellTower());
         this.uiManager.elements.restartFromModal.addEventListener('click', () => this.restart());
         
+        // 控制面板按钮
+        const settingsBtn = document.getElementById('settingsBtn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => this.uiManager.showSettingsModal());
+        }
+        
         // 键盘快捷键
         document.addEventListener('keydown', (e) => {
             this.handleKeyPress(e);
@@ -155,6 +162,17 @@ export class Game {
                 this.selectedTower = null;
                 this.uiManager.clearTowerSelection();
                 this.uiManager.hideTowerUpgrade();
+                // 关闭控制面板
+                this.uiManager.hideSettingsModal();
+                break;
+            case 'Digit1':
+                this.selectTowerByIndex(0);
+                break;
+            case 'Digit2':
+                this.selectTowerByIndex(1);
+                break;
+            case 'Digit3':
+                this.selectTowerByIndex(2);
                 break;
         }
     }
@@ -370,6 +388,21 @@ export class Game {
         
         this.updateUI();
         this.uiManager.showToast('游戏重新开始！', 'info');
+    }
+    
+    /**
+     * 通过索引选择防御塔（快捷键支持）
+     */
+    selectTowerByIndex(index) {
+        const towerButtons = this.uiManager.elements.towerButtons;
+        if (towerButtons[index]) {
+            const btn = towerButtons[index];
+            const type = btn.dataset.tower;
+            const cost = parseInt(btn.dataset.cost);
+            if (!btn.disabled) {
+                this.selectTowerType(type, cost);
+            }
+        }
     }
     
     endGame(victory = false) {
