@@ -22,6 +22,7 @@ class Game {
         this.towers = [];
         this.bullets = [];
         this.particles = [];
+        this.visualEffects = []; // 添加视觉特效数组
         
         // 选中状态
         this.selectedTowerType = null;
@@ -271,6 +272,7 @@ class Game {
         this.towers = [];
         this.bullets = [];
         this.particles = [];
+        this.visualEffects = []; // 重置视觉特效
         
         this.selectedTowerType = null;
         this.selectedTower = null;
@@ -378,6 +380,16 @@ class Game {
             }
         }
         
+        // 更新视觉特效
+        for (let i = this.visualEffects.length - 1; i >= 0; i--) {
+            const effect = this.visualEffects[i];
+            effect.update();
+            
+            if (effect.isDead()) {
+                this.visualEffects.splice(i, 1);
+            }
+        }
+        
         this.updateUI();
         this.checkWaveComplete();
     }
@@ -388,49 +400,41 @@ class Game {
             this.particles.push(particle);
         }
         
-        // 添加可视的爆炸效果
+        // 添加爆炸特效到特效数组
         const explosionEffect = {
             x: x,
             y: y,
             radius: 0,
             maxRadius: 30,
             alpha: 1,
-            growing: true
-        };
-        
-        const animateExplosion = () => {
-            if (explosionEffect.growing) {
-                explosionEffect.radius += 2;
-                explosionEffect.alpha -= 0.05;
-                
-                if (explosionEffect.radius >= explosionEffect.maxRadius) {
-                    explosionEffect.growing = false;
-                }
-                
-                if (explosionEffect.alpha > 0) {
-                    requestAnimationFrame(animateExplosion);
-                }
-            }
-        };
-        
-        // 在下一帧渲染时绘制爆炸效果
-        const originalRender = this.render.bind(this);
-        this.render = () => {
-            originalRender();
+            life: 20,
+            maxLife: 20,
             
-            if (explosionEffect.alpha > 0) {
-                this.ctx.save();
-                this.ctx.globalAlpha = explosionEffect.alpha;
-                this.ctx.strokeStyle = '#FF6B35';
-                this.ctx.lineWidth = 3;
-                this.ctx.beginPath();
-                this.ctx.arc(explosionEffect.x, explosionEffect.y, explosionEffect.radius, 0, Math.PI * 2);
-                this.ctx.stroke();
-                this.ctx.restore();
+            update() {
+                this.radius += 1.5;
+                this.alpha -= 0.05;
+                this.life--;
+            },
+            
+            isDead() {
+                return this.life <= 0 || this.alpha <= 0;
+            },
+            
+            draw(ctx) {
+                if (this.alpha > 0) {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    ctx.strokeStyle = '#FF6B35';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+                }
             }
         };
         
-        animateExplosion();
+        this.visualEffects.push(explosionEffect);
     }
     
     createHitEffect(x, y) {
@@ -439,42 +443,39 @@ class Game {
             this.particles.push(particle);
         }
         
-        // 添加闪烁效果
+        // 添加闪烁特效到特效数组
         const flashEffect = {
             x: x,
             y: y,
             size: 8,
             alpha: 1,
-            duration: 10
-        };
-        
-        const animateFlash = () => {
-            flashEffect.alpha -= 0.1;
-            flashEffect.size += 1;
-            flashEffect.duration--;
+            life: 10,
+            maxLife: 10,
             
-            if (flashEffect.duration > 0) {
-                requestAnimationFrame(animateFlash);
+            update() {
+                this.alpha -= 0.1;
+                this.size += 1;
+                this.life--;
+            },
+            
+            isDead() {
+                return this.life <= 0 || this.alpha <= 0;
+            },
+            
+            draw(ctx) {
+                if (this.alpha > 0) {
+                    ctx.save();
+                    ctx.globalAlpha = this.alpha;
+                    ctx.fillStyle = '#FFD700';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
             }
         };
         
-        // 在下一帧渲染时绘制闪烁效果
-        const originalRender = this.render.bind(this);
-        this.render = () => {
-            originalRender();
-            
-            if (flashEffect.duration > 0) {
-                this.ctx.save();
-                this.ctx.globalAlpha = flashEffect.alpha;
-                this.ctx.fillStyle = '#FFD700';
-                this.ctx.beginPath();
-                this.ctx.arc(flashEffect.x, flashEffect.y, flashEffect.size, 0, Math.PI * 2);
-                this.ctx.fill();
-                this.ctx.restore();
-            }
-        };
-        
-        animateFlash();
+        this.visualEffects.push(flashEffect);
     }
     
     render() {
@@ -487,6 +488,9 @@ class Game {
         this.towers.forEach(tower => tower.draw(this.ctx, tower === this.selectedTower));
         this.bullets.forEach(bullet => bullet.draw(this.ctx));
         this.particles.forEach(particle => particle.draw(this.ctx));
+        
+        // 绘制视觉特效
+        this.visualEffects.forEach(effect => effect.draw(this.ctx));
         
         if (this.selectedTower) {
             this.drawTowerRange(this.selectedTower);
